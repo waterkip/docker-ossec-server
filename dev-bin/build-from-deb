@@ -1,0 +1,2 @@
+docker build -t mintlab/ossec-base -f Dockerfile.binary .
+docker build -t mintlab/ossec -f Dockerfile .

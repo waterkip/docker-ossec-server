@@ -1,16 +1,31 @@
 FROM phusion/baseimage:0.9.18
-MAINTAINER Terence Kent <tkent@xetus.com>
+MAINTAINER Mintlab BV <ops@mintlab.nl>
 
-# git clone git@github.com:ossec/ossec-hids.git
-# install from source
-#
+ENV DEBIAN_FRONTEND=noninteractive
 
-#
-# Follow the server installation parameters specified on the OSSEC website for
-# ubuntu installations
-#
-#RUN curl https://ossec.wazuh.com/repos/apt/conf/ossec-key.gpg.key -o ossec-key.gpg.key &&\
-#  apt-key add ossec-key.gpg.key && rm -v ossec-key.gpg.key &&\
-#  echo "deb http://ossec.wazuh.com/repos/apt/ubuntu trusty main" >> /etc/apt/sources.list &&\
-#  apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -yf install expect ossec-hids \
-#  ossec-hids=2.8.3-4trusty
+WORKDIR /tmp
+
+COPY source/preloaded-vars.conf.server /tmp/etc/preloaded-vars.conf.server
+COPY source/preloaded-vars.conf.agent /tmp/etc/preloaded-vars.conf.agent
+
+# TODO: Merge into one layer
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends git make binutils
+RUN apt-get install -y --no-install-recommends heirloom-mailx gcc
+RUN apt-get install -y --no-install-recommends linux-headers-4.4.0-96
+# Debugging tools, disable on live systems
+RUN apt-get install -y --no-install-recommends apt-file aptitude
+
+    # Shallow clone the lastest tag, we don't need the full history
+RUN git clone --depth 1 --branch v2.9.2 \
+        https://github.com/ossec/ossec-hids.git \
+    && cd ossec-hids \
+    # Install a hybrid server, see
+    # https://github.com/<correct uri>
+    && mv /tmp/etc/preloaded-vars.conf.server etc/preloaded-vars.conf \
+    && ./install.sh \
+    && mv /tmp/etc/preloaded-vars.conf.agent  etc/preloaded-vars.conf \
+    && install.sh \
+    && apt-get clean \
+    && rm -rf /var/cache/apt/* /var/list/apt/* tmp/ossec-hids \
+    && echo "Done"

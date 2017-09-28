@@ -1,0 +1,22 @@
+# preloaded-vars.conf, Daniel B. Cid (dcid @ ossec.net).
+#
+# https://github.com/ossec/ossec-hids/blob/master/etc/preloaded-vars.conf.example
+# http://ossec-docs.readthedocs.io/en/latest/manual/installation/install-source-unattended.html
+#
+
+USER_NO_STOP="y"
+USER_LANGUAGE="en"
+USER_INSTALL_TYPE="agent"
+USER_DIR="/var/ossec/ossec-agent""
+
+USER_ENABLE_ACTIVE_RESPONSE="n"
+USER_ENABLE_SYSCHECK="n"
+USER_ENABLE_ROOTCHECK="n"
+USER_UPDATE="n"
+USER_UPDATE_RULES="n"
+USER_AGENT_SERVER_IP="127.0.0.1"
+USER_AGENT_CONFIG_PROFILE="generic"
+USER_ENABLE_EMAIL="n"
+USER_EMAIL_ADDRESS="mail@example.com"
+USER_EMAIL_SMTP="smtp.example.com"
+USER_CLEANINSTALL="y"

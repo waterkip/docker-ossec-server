@@ -1,9 +1,10 @@
-FROM zaaksysteem/ossec:latest
+FROM mintlab/ossec-base:latest
 MAINTAINER Mintlab BV <ops@mintlab.nl>
 
 # Add a default agent due to this bug
 # https://groups.google.com/forum/#!topic/ossec-list/qeC_h3EZCxQ
 ADD default_agent /var/ossec/default_agent
+
 RUN service ossec restart &&\
   /var/ossec/bin/manage_agents -f /default_agent &&\
   rm /var/ossec/default_agent &&\

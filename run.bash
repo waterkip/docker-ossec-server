@@ -59,34 +59,34 @@ then
     fi
   fi
 
-  if [ $SMTP_ENABLED == true ]
-  then
-    if [[ -z "$SMTP_RELAY_HOST" || -z "$ALERTS_TO_EMAIL" ]]
-    then
-      echo "Unable to configure SMTP, SMTP_RELAY_HOST or ALERTS_TO_EMAIL not defined"
-      SMTP_ENABLED=false
-    else
+  #if [ $SMTP_ENABLED == true ]
+  #then
+  #  if [[ -z "$SMTP_RELAY_HOST" || -z "$ALERTS_TO_EMAIL" ]]
+  #  then
+  #    echo "Unable to configure SMTP, SMTP_RELAY_HOST or ALERTS_TO_EMAIL not defined"
+  #    SMTP_ENABLED=false
+  #  else
 
-      ALERTS_FROM_EMAIL=${ALERTS_FROM_EMAIL:-ossec_alerts@$HOSTNAME}
-      echo "d-i  ossec-hids/email_notification  boolean yes" >> /tmp/debconf.selections
-      echo "d-i  ossec-hids/email_from  string $ALERTS_FROM_EMAIL" >> /tmp/debconf.selections
-      echo "d-i  ossec-hids/email_to  string $ALERTS_TO_EMAIL" >> /tmp/debconf.selections
-      echo "d-i  ossec-hids/smtp_server  string $SMTP_RELAY_HOST" >> /tmp/debconf.selections
-    fi
-  fi
+  #    ALERTS_FROM_EMAIL=${ALERTS_FROM_EMAIL:-ossec_alerts@$HOSTNAME}
+  #    echo "d-i  ossec-hids/email_notification  boolean yes" >> /tmp/debconf.selections
+  #    echo "d-i  ossec-hids/email_from  string $ALERTS_FROM_EMAIL" >> /tmp/debconf.selections
+  #    echo "d-i  ossec-hids/email_to  string $ALERTS_TO_EMAIL" >> /tmp/debconf.selections
+  #    echo "d-i  ossec-hids/smtp_server  string $SMTP_RELAY_HOST" >> /tmp/debconf.selections
+  #  fi
+  #fi
 
-  if [ $SMTP_ENABLED == false ]
-  then
-    echo "d-i  ossec-hids/email_notification  boolean no" >> /tmp/debconf.selections
-  fi
+  #if [ $SMTP_ENABLED == false ]
+  #then
+  #  echo "d-i  ossec-hids/email_notification  boolean no" >> /tmp/debconf.selections
+  #fi
 
-  if [ -e /tmp/debconf.selections ]
-  then
-    debconf-set-selections /tmp/debconf.selections
-    dpkg-reconfigure -f noninteractive ossec-hids
-    rm /tmp/debconf.selections
-    /var/ossec/bin/ossec-control stop
-  fi
+  #if [ -e /tmp/debconf.selections ]
+  #then
+  #  debconf-set-selections /tmp/debconf.selections
+  #  dpkg-reconfigure -f noninteractive ossec-hids
+  #  rm /tmp/debconf.selections
+  #  /var/ossec/bin/ossec-control stop
+  #fi
 
   #
   # Support SYSLOG forwarding, if configured

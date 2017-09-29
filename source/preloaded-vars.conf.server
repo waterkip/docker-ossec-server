@@ -13,8 +13,8 @@ USER_NO_STOP="y"
 # USER_INSTALL_TYPE defines the installation type to
 # be used during install. It can only be "local",
 # "agent" or "server".
-USER_INSTALL_TYPE="server"
-#USER_INSTALL_TYPE="local"
+#USER_INSTALL_TYPE="server"
+USER_INSTALL_TYPE="local"
 #USER_INSTALL_TYPE="agent"
 #USER_INSTALL_TYPE="hybrid"
 

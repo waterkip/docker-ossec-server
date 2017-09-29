@@ -7,7 +7,7 @@
 USER_NO_STOP="y"
 USER_LANGUAGE="en"
 USER_INSTALL_TYPE="agent"
-USER_DIR="/var/ossec/ossec-agent""
+USER_DIR="/var/ossec/ossec-agent"
 
 USER_ENABLE_ACTIVE_RESPONSE="n"
 USER_ENABLE_SYSCHECK="n"

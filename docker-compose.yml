@@ -3,12 +3,12 @@ services:
   ossec-server:
     build:
       context: "."
-      dockerfile: "Dockerfile"
-    #ports:
-    #  - "514:514"
-    #  - "1514:1514"
-    #  - "1515:1515"
-    volumes:
-      - "./etc:/var/ossec/data/etc"
+      dockerfile: "Dockerfile.source"
+    ports:
+      - "514:514"
+      - "1514:1514"
+      - "1515:1515"
+        #    volumes:
+        #      - "./etc:/var/ossec/data/etc"
 
 # vim: filetype=yaml ts=2 tw=76

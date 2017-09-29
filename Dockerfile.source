@@ -9,23 +9,48 @@ COPY source/preloaded-vars.conf.server /tmp/etc/preloaded-vars.conf.server
 COPY source/preloaded-vars.conf.agent /tmp/etc/preloaded-vars.conf.agent
 
 # TODO: Merge into one layer
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends git make binutils
-RUN apt-get install -y --no-install-recommends heirloom-mailx gcc
-RUN apt-get install -y --no-install-recommends linux-headers-4.4.0-96
-# Debugging tools, disable on live systems
-RUN apt-get install -y --no-install-recommends apt-file aptitude
-
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git make binutils libc6-dev heirloom-mailx gcc \
     # Shallow clone the lastest tag, we don't need the full history
-RUN git clone --depth 1 --branch v2.9.2 \
-        https://github.com/ossec/ossec-hids.git \
+    && git clone --depth 1 --branch v2.9.2 \
+    https://github.com/ossec/ossec-hids.git \
     && cd ossec-hids \
+    ## TODO: Patch ossec upstream
     # Install a hybrid server, see
     # https://github.com/<correct uri>
     && mv /tmp/etc/preloaded-vars.conf.server etc/preloaded-vars.conf \
-    && ./install.sh \
-    && mv /tmp/etc/preloaded-vars.conf.agent  etc/preloaded-vars.conf \
-    && install.sh \
-    && apt-get clean \
+    &&  ./install.sh \
+    #&&  mv /tmp/etc/preloaded-vars.conf.agent  etc/preloaded-vars.conf \
+    #&& ./install.sh \
+    && apt-get purge -y git make binutils libc6-dev \
+    && apt-get clean -y \
     && rm -rf /var/cache/apt/* /var/list/apt/* tmp/ossec-hids \
     && echo "Done"
+
+#ADD default_agent /var/ossec/default_agent
+#RUN service ossec restart \
+#  /var/ossec/bin/manage_agents -f /default_agent &&\
+#  rm /var/ossec/default_agent &&\
+#  service ossec stop &&\
+#  echo -n "" /var/ossec/logs/ossec.log
+
+# Initialize the data volume configuration
+ADD data_dirs.env /data_dirs.env
+ADD init.bash /init.bash
+# Sync calls are due to https://github.com/docker/docker/issues/9547
+RUN chmod 755 /init.bash &&\
+  sync && /init.bash &&\
+  sync && rm /init.bash
+
+# Add the bootstrap script
+ADD run.bash /run.bash
+RUN chmod 755 /run.bash
+
+# Specify the data volume
+VOLUME ["/var/ossec/data"]
+
+# Expose ports for sharing
+EXPOSE 1514/udp 1515/tcp
+
+# Define default command.
+ENTRYPOINT ["/run.bash"]
